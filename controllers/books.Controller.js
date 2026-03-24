@@ -1,4 +1,5 @@
-const books = require('../data/bookDetails.json');
+const books = require('../data/books.data.json');
+const category = require('../data/category.json')
 const getAllBooks = (req, res) => {
     try{
         res.status(200).json(books);        
@@ -77,6 +78,30 @@ const getAvailableBooks = (req, res) => {
   }
 };
 
+const getGenres = (req, res) => {
+  try {
+    return res.status(200).json(category.genre);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+const getCupboards = (req, res) => {
+  try {
+    return res.status(200).json(category.cupboards);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+const getShelves = (req, res) => {
+  try {
+    return res.status(200).json(category.shelves);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 module.exports = {
   getAllBooks,
   getBooksByGenre,
@@ -86,4 +111,7 @@ module.exports = {
   getBooksByCupboardAndShelf,
   getIssuedBooks,
   getAvailableBooks,
+  getGenres,
+  getCupboards,
+  getShelves
 };
