@@ -1,15 +1,15 @@
 const express = require('express');
 const app = express();
 require('dotenv').config();
-const port = process.env.PORT
 
+const port = process.env.PORT;
 
 app.use(express.json());
 
 const bookRoutes = require('./routes/books.router.js');
+app.use('/api', bookRoutes);
 
-
-app.use('/', (req, res) => {
+app.get('/', (req, res) => {
   res.send(`
     <html>
       <head>
@@ -40,6 +40,10 @@ app.use('/', (req, res) => {
           tr:nth-child(even) {
             background-color: #f9f9f9;
           }
+          a {
+            text-decoration: none;
+            color: blue;
+          }
         </style>
       </head>
       <body>
@@ -52,27 +56,24 @@ app.use('/', (req, res) => {
             <th>Description</th>
           </tr>
 
-          <tr><td>GET</td><td>/</td><td>Home endpoint</td></tr>
-          <tr><td>GET</td><td>/genre/:genre</td><td>Get books by genre</td></tr>
-          <tr><td>GET</td><td>/cupboard/:cupboard</td><td>Get books by cupboard</td></tr>
-          <tr><td>GET</td><td>/shelf/:shelf</td><td>Get books by shelf (1a–5e)</td></tr>
-          <tr><td>GET</td><td>/cupboard/:c/shelf/:s</td><td>Get books by cupboard & shelf</td></tr>
-          <tr><td>GET</td><td>/issued</td><td>Get all issued books</td></tr>
-          <tr><td>GET</td><td>/available</td><td>Get all available books</td></tr>
-          <tr><td>GET</td><td>/category/genres</td><td>Get all genres</td></tr>
-          <tr><td>GET</td><td>/category/cupboards</td><td>Get all cupboards</td></tr>
-          <tr><td>GET</td><td>/category/shelves</td><td>Get all shelves (1a–5e)</td></tr>
-          <tr><td>GET</td><td>/:id</td><td>Get book by ID</td></tr>
+          <tr><td>GET</td><td><a href="/api/">/api/</a></td><td>Get all books</td></tr>
+          <tr><td>GET</td><td>/api/genre/:genre</td><td>Get books by genre</td></tr>
+          <tr><td>GET</td><td>/api/cupboard/:cupboard</td><td>Get books by cupboard</td></tr>
+          <tr><td>GET</td><td>/api/shelf/:shelf</td><td>Get books by shelf (1a–5e)</td></tr>
+          <tr><td>GET</td><td>/api/cupboard/:c/shelf/:s</td><td>Get books by cupboard & shelf</td></tr>
+          <tr><td>GET</td><td><a href="/api/issued">/api/issued</a></td><td>Get issued books</td></tr>
+          <tr><td>GET</td><td><a href="/api/available">/api/available</a></td><td>Get available books</td></tr>
+          <tr><td>GET</td><td><a href="/api/category/genres">/api/category/genres</a></td><td>Get all genres</td></tr>
+          <tr><td>GET</td><td><a href="/api/category/cupboards">/api/category/cupboards</a></td><td>Get all cupboards</td></tr>
+          <tr><td>GET</td><td><a href="/api/category/shelves">/api/category/shelves</a></td><td>Get all shelves</td></tr>
+          <tr><td>GET</td><td>/api/:id</td><td>Get book by ID</td></tr>
+
         </table>
       </body>
     </html>
   `);
 });
 
-app.listen(port, () =>{
-    try{
-        console.log(`Server running at http://localhost:${port}`);
-    }catch(err){
-        console.log(`error is ${err}`);
-    }
-})
+app.listen(port, () => {
+  console.log(`🚀 Server running at http://localhost:${port}`);
+});
