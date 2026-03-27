@@ -1,5 +1,5 @@
 const books = require('../data/books.data.json');
-const category = require('../data/category.json')
+const category = require('../data/category.data.json')
 const getAllBooks = (req, res) => {
     try{
         res.status(200).json(books);        
@@ -29,13 +29,16 @@ const getBooksByCupboard = (req, res) => {
 };
 
 const getBooksByShelf = (req, res) => {
-    try{
-        const bookShelf = books.filter(s => s.shelf === parseInt(req.params.shelf));
-        if(bookShelf.length === 0) return res.status(404).json({message: "No shelf number found"});
-        return res.status(200).json(bookShelf);
-    }catch(err){
-        res.status(500).json({message: err.message});
-    }
+  try {
+    const shelfMap = { a: 1, b: 2, c: 3, d: 4, e: 5 };
+    const shelfNumber = shelfMap[req.params.shelf];
+    if (!shelfNumber) return res.status(400).json({ message: "Invalid shelf. Use a, b, c, d or e" });
+    const bookShelf = books.filter(s => s.shelf === shelfNumber);
+    if (bookShelf.length === 0) return res.status(404).json({ message: "No books found on this shelf" });
+    return res.status(200).json(bookShelf);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
 const getBookById = (req, res) => {
@@ -50,7 +53,10 @@ const getBookById = (req, res) => {
 
 const getBooksByCupboardAndShelf = (req, res) => {
   try {
-    const bookByCS = books.filter(b => b.cupboard === parseInt(req.params.cupboard) && b.shelf === parseInt(req.params.shelf));
+    const shelfMap = { a: 1, b: 2, c: 3, d: 4, e: 5 };
+    const shelfNumber = shelfMap[req.params.shelf];
+    if (!shelfNumber) return res.status(400).json({ message: "Invalid shelf. Use a, b, c, d or e" });
+    const bookByCS = books.filter(b => b.cupboard === parseInt(req.params.cupboard) && b.shelf === shelfNumber);
     if (bookByCS.length === 0) return res.status(404).json({ message: "No books found" });
     return res.status(200).json(bookByCS);
   } catch (err) {
@@ -102,6 +108,56 @@ const getShelves = (req, res) => {
   }
 };
 
+const getBooksByAuthor = (req, res) => {
+  try {
+    const bookAuthor = books.filter(b => b.author === req.params.author);
+    if (bookAuthor.length === 0) return res.status(404).json({ message: "No books found for this author" });
+    return res.status(200).json(bookAuthor);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+const getBooksByGenreAndId = (req, res) => {
+  try {
+    const book = books.find(b => b.genre === req.params.genre && b.id === parseInt(req.params.id));
+    if (!book) return res.status(404).json({ message: "No book found" });
+    return res.status(200).json(book);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+const getBooksByGenreAndAuthor = (req, res) => {
+  try {
+    const bookGA = books.filter(b => b.genre === req.params.genre && b.author === req.params.author);
+    if (bookGA.length === 0) return res.status(404).json({ message: "No books found" });
+    return res.status(200).json(bookGA);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+const getBooksByGenreAndTitle = (req, res) => {
+  try {
+    const bookGT = books.filter(b => b.genre === req.params.genre && b.title === req.params.title);
+    if (bookGT.length === 0) return res.status(404).json({ message: "No books found" });
+    return res.status(200).json(bookGT);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+const getIssuedBooksByUser = (req, res) => {
+  try {
+    const userBooks = books.filter(b => b.issuedTo === req.params.user);
+    if (userBooks.length === 0) return res.status(404).json({ message: "No books issued to this user" });
+    return res.status(200).json(userBooks);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 module.exports = {
   getAllBooks,
   getBooksByGenre,
@@ -113,5 +169,10 @@ module.exports = {
   getAvailableBooks,
   getGenres,
   getCupboards,
-  getShelves
+  getShelves,
+  getBooksByAuthor,
+  getBooksByGenreAndId,
+  getBooksByGenreAndAuthor,
+  getBooksByGenreAndTitle,
+  getIssuedBooksByUser
 };
